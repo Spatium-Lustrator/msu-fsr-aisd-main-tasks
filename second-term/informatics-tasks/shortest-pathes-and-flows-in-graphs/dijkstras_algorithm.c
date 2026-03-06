@@ -1,27 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-// only three correct tests?.....
 
-#define INACCURACY 0.0000000000000000000001
+#define INFINITY 2147483647
 
-void update_neighbors_costs(double **adjacency_matrix, double *distances, int current_vertex, int count_of_vertexes) {
-    int l;
-    double current_cost = distances[current_vertex], new_cost;
+void update_neighbors_costs(int **adjacency_matrix, int *distances, int current_vertex, int count_of_vertexes) {
+    int current_cost = distances[current_vertex], new_cost, l;
 
     for (l=0; l<count_of_vertexes; l++) {
         new_cost = current_cost + adjacency_matrix[current_vertex][l];
-
-        if (!(adjacency_matrix[current_vertex][l]< INACCURACY) && new_cost < distances[l]) {
+        if (adjacency_matrix[current_vertex][l] > 0 && new_cost < distances[l]) {
             distances[l] = new_cost;
         }
     }
-
 }
 
-int find_node_with_lowest_cost(double *distances, int *processed, int count_of_vertexes) {
-    int result=-1, i;
-    double current_min_distance = INFINITY;
+int find_node_with_lowest_cost(int *processed, int *distances, int count_of_vertexes) {
+    int current_min_distance = INFINITY, result = -1, i;
 
     for (i=0; i<count_of_vertexes; i++) {
         if (current_min_distance > distances[i] && !processed[i]) {
@@ -33,54 +27,52 @@ int find_node_with_lowest_cost(double *distances, int *processed, int count_of_v
     return result;
 }
 
-double find_shortest_path_weight(double **adjacency_matrix, int from_vertex, int to_vertex, int count_of_vertexes) {
-    int *processed, current_vertex=from_vertex, k;
-    double *distances, result; 
-
-    processed = (int*) calloc(count_of_vertexes, sizeof(int));
-    distances = (double*) malloc(sizeof(double)*count_of_vertexes);
-
-    for (k=0; k<count_of_vertexes; k++) distances[k] = INFINITY;
-    distances[from_vertex] = 0;
+int find_shortest_path_between_vertexes(int **adjacency_matrix, int *processed, int *distances, int count_of_vertexes,int start_index, int end_index) {
+    int current_vertex=start_index;
 
     while (current_vertex >= 0) {
         update_neighbors_costs(adjacency_matrix, distances, current_vertex, count_of_vertexes);
         processed[current_vertex] = 1;
-        current_vertex = find_node_with_lowest_cost(distances, processed, count_of_vertexes);
+        current_vertex = find_node_with_lowest_cost(processed, distances, count_of_vertexes);
+
     }
-      
-    result = distances[to_vertex];
-
-    free(processed);
-    free(distances);
-
-    return result;
+    
+    if (distances[end_index] == INFINITY) return -1;
+    return distances[end_index];
 
 }
 
 int main(void) {
+    int count_of_vertexes, start_index, end_index;
+    int **adjacency_matrix, *processed, *distances;
     int i, j;
-    int count_of_vertexes, from_vertex, to_vertex;
-    double** adjacency_matrix; 
 
-    scanf("%d %d %d", &count_of_vertexes, &from_vertex, &to_vertex);
-    adjacency_matrix = (double**) malloc(sizeof(double*)*count_of_vertexes);
 
-    for (i=0; i<count_of_vertexes; i++) {
-        adjacency_matrix[i] = (double*) malloc(sizeof(double)*count_of_vertexes);
-        for (j=0; j<count_of_vertexes; j++)  {
-            scanf("%lf", &adjacency_matrix[i][j]);
+    scanf("%d %d %d", &count_of_vertexes, &start_index, &end_index);
+
+    adjacency_matrix = (int**) malloc(sizeof(int*)*count_of_vertexes);
+    processed = (int*) calloc(count_of_vertexes, sizeof(int));
+    distances = (int*) malloc(count_of_vertexes*sizeof(int));
+
+    for(i=0; i<count_of_vertexes; i++) {
+        adjacency_matrix[i] = (int*) malloc(sizeof(int)*count_of_vertexes);
+        distances[i] = INFINITY;
+        for (j=0; j<count_of_vertexes; j++) {
+            scanf("%d", adjacency_matrix[i] + j);
         }
     }
 
-    printf("%.0lf", find_shortest_path_weight(adjacency_matrix, from_vertex, to_vertex, count_of_vertexes));
+    distances[start_index-1] = 0;
 
-    for (i=0; i<count_of_vertexes; i++) free(adjacency_matrix[i]);
+    printf("%d", find_shortest_path_between_vertexes(adjacency_matrix, processed, distances, count_of_vertexes, start_index-1, end_index-1));
+
+    for(i=0; i<count_of_vertexes; i++) {
+        free(adjacency_matrix[i]);
+    }
+
     free(adjacency_matrix);
-
-
+    free(processed);
+    free(distances);
 
     return 0;
-
-
 }
