@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+// only three correct tests?.....
 
 #define INACCURACY 0.0000000000000000000001
 
@@ -72,7 +73,7 @@ int main(void) {
         }
     }
 
-    printf("%lf", find_shortest_path_weight(adjacency_matrix, from_vertex, to_vertex, count_of_vertexes));
+    printf("%.0lf", find_shortest_path_weight(adjacency_matrix, from_vertex, to_vertex, count_of_vertexes));
 
     for (i=0; i<count_of_vertexes; i++) free(adjacency_matrix[i]);
     free(adjacency_matrix);
