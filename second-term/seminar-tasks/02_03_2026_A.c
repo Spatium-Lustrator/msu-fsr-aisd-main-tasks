@@ -183,7 +183,7 @@ int find_maximum_flow(int **remnant_capacity, int *previous_vertexes, queue *que
 int main(void) {
     // Variables initialization 
     int i;
-    int from_vertex, to_vertex, weight;
+    int from_vertex, to_vertex, weight, result;
     int count_of_vertexes, count_of_edges, index_start, index_end;
     int **capacity, *previous_vertexes; 
 
@@ -210,7 +210,12 @@ int main(void) {
     }
 
     // Calculate result and show it 
-    printf("%d", find_maximum_flow(capacity, previous_vertexes, queue_of_vertexes, count_of_vertexes, index_start, index_end));
+    result = find_maximum_flow(capacity, previous_vertexes, queue_of_vertexes, count_of_vertexes, index_start, index_end);
+    if (result == 0) {
+        printf("The source and sink nodes are already disconnected");
+    } else {
+        printf("%d", result);
+    }
 
     // Free used memory 
     for (i=0; i<count_of_vertexes; i++) {
