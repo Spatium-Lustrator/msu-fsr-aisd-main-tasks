@@ -82,7 +82,7 @@ void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_righ
     cell_to_the_north = current_cell-hall_length;
     cell_to_the_south = current_cell+hall_length;
 
-    if (0 <= cell_to_the_west  && cell_to_the_west < total_cell_count && hall_scheme[cell_to_the_west] != 1 && got_here_by_direction[cell_to_the_west] == NOT_VISITED) {
+    if (0 <= cell_to_the_west  && cell_to_the_west < total_cell_count && hall_scheme[cell_to_the_west] != 1 && (got_here_by_direction[cell_to_the_west] == NOT_VISITED || remaining_right_turns_per_cell[current_cell] > remaining_right_turns_per_cell[cell_to_the_west])) {
         if (got_here_by_direction[current_cell] == SOUTH && remaining_right_turns_per_cell[current_cell] >= 1) {
             distances[cell_to_the_west] = distances[current_cell] + 1;
             remaining_right_turns_per_cell[cell_to_the_west] = remaining_right_turns_per_cell[current_cell] - 1;
@@ -96,7 +96,7 @@ void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_righ
         }
     }
 
-    if (0 <= cell_to_the_east  && cell_to_the_east < total_cell_count && hall_scheme[cell_to_the_east] != 1 && got_here_by_direction[cell_to_the_east] == NOT_VISITED) {
+    if (0 <= cell_to_the_east  && cell_to_the_east < total_cell_count && hall_scheme[cell_to_the_east] != 1 && (got_here_by_direction[cell_to_the_east] == NOT_VISITED || remaining_right_turns_per_cell[current_cell] > remaining_right_turns_per_cell[cell_to_the_east])) {
         if (got_here_by_direction[current_cell] == NORTH && remaining_right_turns_per_cell[current_cell] >= 1) {
             distances[cell_to_the_east] = distances[current_cell] + 1;
             remaining_right_turns_per_cell[cell_to_the_east] = remaining_right_turns_per_cell[current_cell] - 1;
@@ -110,7 +110,7 @@ void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_righ
         }
     }
 
-    if (0 <= cell_to_the_north  && cell_to_the_north < total_cell_count && hall_scheme[cell_to_the_north] != 1 && got_here_by_direction[cell_to_the_north] == NOT_VISITED) {
+    if (0 <= cell_to_the_north  && cell_to_the_north < total_cell_count && hall_scheme[cell_to_the_north] != 1 && (got_here_by_direction[cell_to_the_north] == NOT_VISITED || remaining_right_turns_per_cell[current_cell] > remaining_right_turns_per_cell[cell_to_the_north])) {
         if (got_here_by_direction[current_cell] == WEST && remaining_right_turns_per_cell[current_cell] >= 1) {
             distances[cell_to_the_north] = distances[current_cell] + 1;
             remaining_right_turns_per_cell[cell_to_the_north] = remaining_right_turns_per_cell[current_cell] - 1;
@@ -124,7 +124,7 @@ void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_righ
         }
     }
 
-    if (0 <= cell_to_the_south  && cell_to_the_south < total_cell_count && hall_scheme[cell_to_the_south] != 1 && got_here_by_direction[cell_to_the_south] == NOT_VISITED) {
+    if (0 <= cell_to_the_south  && cell_to_the_south < total_cell_count && hall_scheme[cell_to_the_south] != 1 && (got_here_by_direction[cell_to_the_south] == NOT_VISITED || remaining_right_turns_per_cell[current_cell] > remaining_right_turns_per_cell[cell_to_the_south])) {
         if (got_here_by_direction[current_cell] == EAST && remaining_right_turns_per_cell[current_cell] >= 1) {
             distances[cell_to_the_south] = distances[current_cell] + 1;
             remaining_right_turns_per_cell[cell_to_the_south] = remaining_right_turns_per_cell[current_cell] - 1;
