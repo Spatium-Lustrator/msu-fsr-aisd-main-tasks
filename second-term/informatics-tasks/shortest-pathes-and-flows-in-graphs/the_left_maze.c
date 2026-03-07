@@ -63,10 +63,24 @@ int is_not_empty(queue *queue) {
 
 void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_right_turns_per_cell, int *got_here_by_direction, queue *queue, int current_cell, int hall_width, int hall_length) {
     int total_cell_count = hall_length*hall_width;
-    int cell_to_the_west = current_cell-1;
-    int cell_to_the_east = current_cell+1;
-    int cell_to_the_north = current_cell-hall_length;
-    int cell_to_the_south = current_cell+hall_length;
+    int cell_to_the_west, cell_to_the_east, cell_to_the_north, cell_to_the_south;
+
+    if (current_cell % hall_length == 0) {
+        cell_to_the_west = -1;
+    } else {
+        cell_to_the_west = current_cell-1;
+    }
+
+
+    if ((current_cell+1) % hall_length == 0) {
+        cell_to_the_east = -1;
+    } else {
+        cell_to_the_east = current_cell+1;
+
+    }
+
+    cell_to_the_north = current_cell-hall_length;
+    cell_to_the_south = current_cell+hall_length;
 
     if (0 <= cell_to_the_west  && cell_to_the_west < total_cell_count && hall_scheme[cell_to_the_west] != 1 && got_here_by_direction[cell_to_the_west] == NOT_VISITED) {
         if (got_here_by_direction[current_cell] == SOUTH && remaining_right_turns_per_cell[current_cell] >= 1) {
@@ -128,40 +142,24 @@ void update_neighbors_info(int *hall_scheme, int *distances, int *remaining_righ
 
 }
 
-void breadth_first_search(int *hall_scheme, int *distances, int *remaining_right_turns_per_cell, int *got_here_by_direction, queue *queue, int start_available_right_turns, int start_cell, int hall_width, int hall_length) {
+void breadth_first_search(int *hall_scheme, int *distances, int *remaining_right_turns_per_cell, int *got_here_by_direction, queue *bfs_queue, int start_available_right_turns, int start_cell, int hall_width, int hall_length) {
     int current_cell, k;
 
     distances[start_cell] = 0;
     remaining_right_turns_per_cell[start_cell] = start_available_right_turns;
+    got_here_by_direction[start_cell] = ANY;
 
-    push(queue, start_cell);
+    push(bfs_queue, start_cell);
 
-    while (is_not_empty(queue)) {
-        current_cell = pop(queue);
+    while (is_not_empty(bfs_queue)) {
+        current_cell = pop(bfs_queue);
+
+        update_neighbors_info(hall_scheme, distances, remaining_right_turns_per_cell, got_here_by_direction, bfs_queue, current_cell, hall_width, hall_length);
     }
 
 
 
 }
-
-// void breadth_first_search(int **remnant_capacity, int *previous_vertexes, queue *queue, int count_of_vertexes, int index_start, int index_end) {
-//     int i, current_vertex;
-
-//     for (i=0; i<count_of_vertexes; i++) previous_vertexes[i] = -1;
-//     push(queue, index_start);
-//     while (is_not_empty(queue)) {
-//         current_vertex = pop(queue);
-//         for (i=0; i<count_of_vertexes; i++) {
-//             if (remnant_capacity[current_vertex][i] != 0 && previous_vertexes[i] == -1) {
-//                 previous_vertexes[i] = current_vertex;
-//                 push(queue, i);
-//             }
-//         }
-//     }
-
-
-// }
-
 
 int main(void) {
     queue *bfs_queue;
@@ -195,7 +193,6 @@ int main(void) {
     }
 
     breadth_first_search(hall_scheme, distances, remaining_right_turns_per_cell, got_here_by_direction, bfs_queue, number_of_available_right_turns, start_cell, hall_width, hall_length);
-
     if (distances[finish_cell] == INFINITY) {
         printf("-1");
     } else {
