@@ -176,7 +176,7 @@ int main(void) {
 
     for (i=0; i<4; i++) {
         distances[i] = (distance_and_remaining_turns***) calloc(number_of_available_right_turns+1, sizeof(distance_and_remaining_turns**));
-        for (k=0; k<number_of_available_right_turns+1; k++) {
+        for (k=0; k<=number_of_available_right_turns; k++) {
             distances[i][k] = (distance_and_remaining_turns**) calloc(hall_length*hall_width, sizeof(distance_and_remaining_turns*));
             for (j=0; j<hall_length*hall_width; j++) {
                 distances[i][k][j] = (distance_and_remaining_turns*) calloc(1, sizeof(distance_and_remaining_turns));
@@ -207,22 +207,6 @@ int main(void) {
     breadth_first_search(hall_scheme, distances, bfs_queue, number_of_available_right_turns, start_cell, hall_width, hall_length, number_of_available_right_turns);
 
     for (i=0; i<4; i++) {
-        printf("%d:\n", i);
-        for (k=0; k<number_of_available_right_turns+1; k++) {
-            printf("%d turns: ", k);
-            for (j=0; j<hall_length*hall_width; j++) {
-                int d = distances[i][k][j]->distance;
-                if (d==INFINITY) {
-                    printf("inf ");
-                } else {
-                    printf("%d ", d);
-                }
-            }
-            printf("\n");
-        }
-    }
-
-    for (i=0; i<4; i++) {
         for (k=0; k<number_of_available_right_turns+1; k++) {
             if (min_dist_to_target > distances[i][k][finish_cell]->distance) {
                 min_dist_to_target = distances[i][k][finish_cell]->distance;
@@ -238,10 +222,20 @@ int main(void) {
     } else {
         printf("%d", min_dist_to_target);
     }
+
+    for (i=0; i<4; i++) {
+        for (k=0; k<=number_of_available_right_turns; k++) {
+            for (j=0; j<hall_length*hall_width; j++) {
+                free(distances[i][k][j]);
+            }
+            free(distances[i][k]);
+        }
+        free(distances[i]);
+    }
     
-    // free(distances);
-    // free(bfs_queue);
-    // free(hall_scheme);
+    free(distances);
+    free(bfs_queue);
+    free(hall_scheme);
 
 
 
