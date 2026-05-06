@@ -204,7 +204,7 @@ void print_convex_hull(stack_node *element) {
 int main(void) {
 
     stack_node *top_stack_point = NULL;
-    point **points, *pivot_point;
+    point **points;
 
     double current_x, current_y;
 

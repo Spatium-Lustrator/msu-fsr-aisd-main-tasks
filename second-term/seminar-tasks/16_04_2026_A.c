@@ -33,15 +33,12 @@ int levenshtein_distance(int **matrix, char *first_string, char *second_string, 
 
 int main(void) {
 
-    int insert_cost=2, delete_cost=1, replace_cost=1;
-    int first_string_length=42, second_string_length=42;
-    int i;
     int **levenshtein_distance_matrix;
+    int insert_cost=2, delete_cost=1, replace_cost=1;
+    int first_string_length, second_string_length;
+    int i;
 
-    char *first_string, *second_string;
-
-    first_string = (char*) calloc(first_string_length, sizeof(char));
-    second_string = (char*) calloc(second_string_length+1, sizeof(char));
+    char first_string[42], second_string[42];
 
     scanf("%s", &first_string);
     scanf("%s", &second_string);
@@ -49,22 +46,13 @@ int main(void) {
     first_string_length = strlen(first_string);
     second_string_length = strlen(second_string);
 
-    first_string = realloc(first_string, first_string_length+1);
-    second_string = realloc(second_string, second_string_length+1);
-
     levenshtein_distance_matrix = (int**) calloc(first_string_length+1, sizeof(int*));
     for (i=0; i<first_string_length+1; i++) levenshtein_distance_matrix[i] = (int*) calloc(second_string_length+1, sizeof(int));
 
-    printf("%d", levenshtein_distance(levenshtein_distance, first_string, second_string, first_string_length, second_string_length, insert_cost, delete_cost, replace_cost));
-
-    for (i=0; i<first_string_length; i++) printf("%c", first_string[i]);
-    printf("\n");
-    for (i=0; i<second_string_length; i++) printf("%c", second_string[i]);
+    printf("%d", levenshtein_distance(levenshtein_distance_matrix, first_string, second_string, first_string_length, second_string_length, insert_cost, delete_cost, replace_cost));
 
     for (i=0; i<first_string_length+1; i++) free(levenshtein_distance_matrix[i]);
     free(levenshtein_distance_matrix);
-    free(first_string);
-    free(second_string);
 
     return 0;
 }
